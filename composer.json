@@ -1,0 +1,21 @@
+{
+    "name": "masnathan/dev-tools",
+    "description": "Development tools that might be handy",
+    "require": {
+        "php": ">=5.4",
+        "symfony/console": "2.*",
+        "knplabs/github-api": "~1.2",
+        "masnathan/object": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "André Filipe",
+            "email": "andre.r.flip@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MASNathan\\DevTools\\": "src/"
+        }
+    }
+}
