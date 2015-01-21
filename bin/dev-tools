@@ -11,7 +11,11 @@ date_default_timezone_set('Europe/Lisbon');
 require_once __DIR__ . '/../vendor/autoload.php'; 
 
 // import the Symfony Console Application 
-use Symfony\Component\Console\Application; 
+use Symfony\Component\Console\Application;
+use MASNathan\DevTools\Commands\Github\ListCommand as GithubListCommand;
+use MASNathan\DevTools\Commands\Github\CloneCommand as GithubCloneCommand;
 
-$app = new Application();
+$app = new Application('MASNathan Dev Tools', '0.1');
+$app->add(new GithubListCommand());
+$app->add(new GithubCloneCommand());
 $app->run();
