@@ -129,11 +129,16 @@ EOT
         $formatter = $this->getHelper('formatter');
 
         $output->writeln($formatter->formatSection($repoName, 'Cloning from ' . $repoSshPath));
+        $output->writeln($formatter->formatSection($repoName, '...'));
 
-        echo shell_exec("/usr/bin/git clone $repoSshPath 2>&1");
+        $message = exec("/usr/bin/git clone $repoSshPath 2>&1");
 
+        if (strpos($message, 'fatal:') === 0) {
+            $output->writeln($formatter->formatSection($repoName, $message, 'error'));
+        } else {
+            $output->writeln($formatter->formatSection($repoName, 'Cloned!'));
+        }
 
-        $output->writeln($formatter->formatSection($repoName, 'Cloned!'));
         $output->writeln('');
     }
 }
