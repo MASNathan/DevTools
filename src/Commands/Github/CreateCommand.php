@@ -105,6 +105,24 @@ EOT
         );
         $question->setErrorMessage('The organization %s is invalid.');
         $organization = $this->getHelper('question')->ask($input, $output, $question);
+        // Enable Issues?
+        $question = new Question('Enable the <info>Issues</info> for this repository (y/n):');
+        $question->setValidator(function ($answer) {
+            if (!in_array($answer, ['y', 'Y', 'n', 'N'])) {
+                throw new \RuntimeException('Please use one of the following answers: "y" or "n"');
+            }
+            return $answer;
+        });
+        $hasIssues = $this->getHelper('question')->ask($input, $output, $question);
+        // Enable Wiki?
+        $question = new Question('Enable the <info>Wiki</info> for this repository (y/n):');
+        $question->setValidator(function ($answer) {
+            if (!in_array($answer, ['y', 'Y', 'n', 'N'])) {
+                throw new \RuntimeException('Please use one of the following answers: "y" or "n"');
+            }
+            return $answer;
+        });
+        $hasWiki = $this->getHelper('question')->ask($input, $output, $question);
         // Create README file
         $question = new Question('Initialize this repository with a <info>README</info> (y/n):');
         $question->setValidator(function ($answer) {
@@ -126,9 +144,9 @@ EOT
                 $homepage,
                 in_array($private, ['y', 'Y']) ? false : true,
                 $organization == 'none' ? null : $organization,
-                false,
-                false,
-                false,
+                in_array($hasIssues, ['y', 'Y']) ? true : false,
+                in_array($hasWiki, ['y', 'Y']) ? true : false,
+                true,
                 null,
                 in_array($autoInit, ['y', 'Y']) ? true : false
             );
