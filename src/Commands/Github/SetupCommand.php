@@ -18,22 +18,6 @@ class SetupCommand extends Command {
         $this
             ->setName("github:setup")
             ->setDescription("Github auth setup.")
-            ->addArgument(
-                'username',
-                InputArgument::OPTIONAL,
-                'The user you want to spy on.'
-            )
-            ->addArgument(
-                'repository',
-                InputArgument::OPTIONAL,
-                'The repository you want to clone.'
-            )
-            ->addOption(
-               'all',
-               null,
-               InputOption::VALUE_NONE,
-               'If set, all the repositories of the user will be cloned.'
-            )
             ->setHelp(<<<EOT
 
 To generate a token please go to github.com -> Settings -> Applications -> Generate new token
