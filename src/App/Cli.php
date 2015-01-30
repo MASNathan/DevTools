@@ -3,7 +3,8 @@
 namespace MASNathan\DevTools\App;
 
 use Symfony\Component\Console\Application,
-    MASNathan\DevTools\Commands\Github;
+    MASNathan\DevTools\Commands\Github,
+    MASNathan\DevTools\Commands\Bitbucket;
 
 /**
  * Base Client Application class
@@ -21,6 +22,7 @@ class Cli extends Application
             new Github\ListCommand(),
             new Github\CloneCommand(),
             new Github\CreateCommand(),
+            new Bitbucket\SetupCommand(),
         ));
     }
 }
