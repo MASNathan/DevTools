@@ -51,6 +51,7 @@ class Config extends Object
 
             return $this->data->$key = new parent();
         }
+        return $result;
     }
 
     protected function getFileData()
