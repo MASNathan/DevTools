@@ -1,6 +1,7 @@
 <?php
 
 namespace MASNathan\DevTools\App;
+
 use MASNathan\Object;
 
 /**
