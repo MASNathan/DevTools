@@ -14,7 +14,7 @@ class Cli extends Application
      * DevTools client application constructor.
      */
     public function __construct() {
-        parent::__construct('MASNathan Dev Tools', '1.0');
+        parent::__construct('MASNathan Dev Tools', '0.1');
  
         $this->addCommands(array(
             new Github\SetupCommand(),
