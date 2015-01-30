@@ -29,7 +29,7 @@ Display the repositories of a Github user
 
 Usage:
 
-<info>dev-tools github:list reidukuduro</info>
+<info>dev-tools github:list github_user</info>
 
 You can also set your credentials by executing <info>dev-tools github:setup</info> to simply list your stuff
 
@@ -54,7 +54,6 @@ EOT
         
         $client = new GithubClient();
         $client->authenticate($configuration->getGithub()->getToken(), null, GithubClient::AUTH_URL_TOKEN);
-
 
         $table = new Table($output);
         $table->setHeaders(['#', 'Type', 'Name', 'Language']);

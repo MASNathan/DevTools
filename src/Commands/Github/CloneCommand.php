@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Github\Client as GithubClient;
+use MASNathan\DevTools\App\Config;
 
 class CloneCommand extends Command {
 
@@ -24,27 +25,33 @@ class CloneCommand extends Command {
                 InputArgument::OPTIONAL,
                 'The user you want to spy on.'
             )
-            ->addArgument(
-                'repository',
-                InputArgument::OPTIONAL,
-                'The repository you want to clone.'
-            )
             ->addOption(
                'all',
                null,
                InputOption::VALUE_NONE,
                'If set, all the repositories of the user will be cloned.'
             )
+            ->addOption(
+               'repository',
+               'r',
+               InputOption::VALUE_OPTIONAL,
+               'The name of the repository that you want to clone.'
+            )
             ->setHelp(<<<EOT
-Display the repositories of a Github user
+Helps you cloning repositories
 
 Usage:
 
-<info>dev-tools github:list reidukuduro</info>
+<info>dev-tools github:clone github_user</info>
 
-You can also set your credentials on the config file to simply list your stuff
+You can also set your credentials by executing <info>dev-tools github:setup</info> to simply list your stuff
 
-<info>dev-tools github:list</info>
+<info>dev-tools github:clone</info>
+
+If you don't know the name of the repo you want to clone, don't panic, you'll get to choose one, but if you do, you can also run something like this:
+
+<info>dev-tools github:clone -r repository_name</info>
+
 EOT
 );
 
@@ -52,28 +59,51 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * @todo if empty, read the user from config
-         */
+        $configuration = new Config;
+
+        $repository = $input->getOption('repository');
         $username   = $input->getArgument('username');
-        $repository = $input->getArgument('repository');
         if (!$username) {
-            $username = 'reidukuduro';
+            if ($configuration->getGithub()->getUsername()) {
+                $username = $configuration->getGithub()->getUsername();
+            } else {
+                throw new \Exception("No username to look for, please use 'dev-tools github:setup'");
+            }
         }
         
         $cloneAllRepos = $input->getOption('all');
 
         $client = new GithubClient();
-        $repos = $client->api('user')->repositories($username);
+        $client->authenticate($configuration->getGithub()->getToken(), null, GithubClient::AUTH_URL_TOKEN);
 
+        // Array that stores the repositories ssh keys
         $reposSsh = [];
+        // Array that stores the answers
         $answerOptions = [];
+        // Here we have a row index, so we can clone it later
+        $row = 1;
+
+        // Lets fetch my repositories
+        $repos = $client->api('user')->repositories($username);
         foreach ($repos as $key => $repo) {
-            $answerOptions[$key] = $repo['full_name'];
+            $answerOptions[$row++] = $repo['full_name'];
             $reposSsh[strtolower($repo['full_name'])] = [
                 'name' => $repo['full_name'],
                 'ssh' => $repo['ssh_url']
             ];
+        }
+        // Now let's fetch my organizations repositories, if any
+        // My Organizations
+        $organizations = $client->api('user')->organizations($username);
+        foreach ($organizations as $organization) {
+            $organizationRepos = $client->api('organization')->repositories($organization['login'], 'member');
+            foreach ($organizationRepos as $key => $repo) {
+                $answerOptions[$row++] = $repo['full_name'];
+                $reposSsh[strtolower($repo['full_name'])] = [
+                    'name' => $repo['full_name'],
+                    'ssh' => $repo['ssh_url']
+                ];
+            }
         }
 
         // Let's clone all the things
