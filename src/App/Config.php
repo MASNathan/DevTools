@@ -41,6 +41,18 @@ class Config extends Object
         $this->save();
     }
 
+    public function __call($alias, array $args = array())
+    {
+        $result = parent::__call($alias, $args);
+
+        if (!$result) {
+            preg_match_all('/[A-Z][^A-Z]*/', $alias, $parts);
+            $key = strtolower(implode('_', $parts[0]));
+
+            return $this->data->$key = new parent();
+        }
+    }
+
     protected function getFileData()
     {
         if (is_file($this->homeDir . '/' . $this->configurationFileName)) {

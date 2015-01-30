@@ -45,17 +45,13 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //Lets bootstrap our configuration
         $configuration = new Config;
-        if (!$configuration->getGithub()) {
-            $configuration->setGithub([]);
-        }
 
-        // Well maybe you don't know what to clone
+        // Username
         $question = new Question('Enter your username:');
         $username = $this->getHelper('question')->ask($input, $output, $question);
         $configuration->getGithub()->setUsername($username);
-
+        // Token
         $question = new Question('Enter your github token:');
         $token = $this->getHelper('question')->ask($input, $output, $question);
         $configuration->getGithub()->setToken($token);

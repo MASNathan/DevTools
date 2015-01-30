@@ -47,11 +47,13 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $configuration = new Config;
+        
         /**
          * @todo if empty, read the user from config
          */
         $username = $input->getArgument('username');
-        if (!$username) {
+        if (!$username && $configuration->getGithub()->getUsername()) {
             $username = 'reidukuduro';
         }
         
