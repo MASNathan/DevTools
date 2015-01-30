@@ -20,6 +20,7 @@ class Cli extends Application
             new Github\SetupCommand(),
             new Github\ListCommand(),
             new Github\CloneCommand(),
+            new Github\CreateCommand(),
         ));
     }
 }

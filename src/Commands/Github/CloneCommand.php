@@ -11,6 +11,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Github\Client as GithubClient;
 use MASNathan\DevTools\App\Config;
+use MASNathan\DevTools\App\Git;
 
 class CloneCommand extends Command {
 
@@ -161,7 +162,7 @@ EOT
         $output->writeln($formatter->formatSection($repoName, 'Cloning from ' . $repoSshPath));
         $output->writeln($formatter->formatSection($repoName, '...'));
 
-        $message = exec("/usr/bin/git clone $repoSshPath 2>&1");
+        $message = Git::cloneRepo($repoSshPath);
 
         if (strpos($message, 'fatal:') === 0) {
             $output->writeln($formatter->formatSection($repoName, $message, 'error'));
