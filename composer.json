@@ -4,8 +4,9 @@
     "require": {
         "php": ">=5.4",
         "symfony/console": "2.*",
+        "masnathan/object": "dev-master",
         "knplabs/github-api": "~1.2",
-        "masnathan/object": "dev-master"
+        "gentle/bitbucket-api": "0.6.0"
     },
     "authors": [
         {
