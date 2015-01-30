@@ -24,12 +24,6 @@ class ListCommand extends Command {
                 InputArgument::OPTIONAL,
                 'The user that you want to spy on.'
             )
-            ->addOption(
-               'private',
-               'p',
-               InputOption::VALUE_NONE,
-               'If set, the private repositories will be displayed instead.'
-            )
             ->setHelp(<<<EOT
 Display the repositories of a Github user
 
@@ -48,27 +42,36 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $configuration = new Config;
-        
-        /**
-         * @todo if empty, read the user from config
-         */
+
         $username = $input->getArgument('username');
-        if (!$username && $configuration->getGithub()->getUsername()) {
-            $username = 'reidukuduro';
+        if (!$username) {
+            if ($configuration->getGithub()->getUsername()) {
+                $username = $configuration->getGithub()->getUsername();
+            } else {
+                throw new \Exception("No username to look for, please use 'dev-tools github:setup'");
+            }
         }
         
-        $showPrivateRepos = $input->getOption('private');
+        $client = new GithubClient();
+        $client->authenticate($configuration->getGithub()->getToken(), null, GithubClient::AUTH_URL_TOKEN);
+
 
         $table = new Table($output);
-        $table->setHeaders(['#', 'Name', 'Language']);
-
-        $client = new GithubClient();
-        //$users = $client->api('user')->find($username);
+        $table->setHeaders(['#', 'Type', 'Name', 'Language']);
+        $row = 1;
+        // My Repositories
         $repos = $client->api('user')->repositories($username);
         foreach ($repos as $key => $repo) {
-            $table->addRow([$key, $repo['full_name'], $repo['language']]);
+            $table->addRow([$row++, $repo['private'] ? 'Private' : 'Public', $repo['full_name'], $repo['language']]);
         }
-
+        // My Organizations
+        $organizations = $client->api('user')->organizations($username);
+        foreach ($organizations as $organization) {
+            $organizationRepos = $client->api('organization')->repositories($organization['login'], 'member');
+            foreach ($organizationRepos as $key => $repo) {
+                $table->addRow([$row++, $repo['private'] ? 'Private' : 'Public', $repo['full_name'], $repo['language']]);
+            }
+        }
         $table->render();
     }
 }

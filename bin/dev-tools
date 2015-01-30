@@ -14,5 +14,3 @@ use MASNathan\DevTools\App\Cli;
 
 $app = new Cli();
 $app->run();
-
-//$client->authenticate('1beb9d38a1ddb2f0bcdf8196f58429cbb69d71c5', null, Github\Client::AUTH_HTTP_TOKEN);
