@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\Table;
 use Github\Client as GithubClient;
+use MASNathan\DevTools\App\Config;
 
 class ListCommand extends Command {
 
@@ -36,7 +37,7 @@ Usage:
 
 <info>dev-tools github:list reidukuduro</info>
 
-You can also set your credentials on the config file to simply list your stuff
+You can also set your credentials by executing <info>dev-tools github:setup</info> to simply list your stuff
 
 <info>dev-tools github:list</info>
 EOT

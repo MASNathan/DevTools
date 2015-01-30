@@ -1,0 +1,65 @@
+<?php
+
+namespace MASNathan\DevTools\Commands\Github;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Question\Question;
+use MASNathan\DevTools\App\Config;
+
+class SetupCommand extends Command {
+
+    protected function configure()
+    {   
+
+        $this
+            ->setName("github:setup")
+            ->setDescription("Github auth setup.")
+            ->addArgument(
+                'username',
+                InputArgument::OPTIONAL,
+                'The user you want to spy on.'
+            )
+            ->addArgument(
+                'repository',
+                InputArgument::OPTIONAL,
+                'The repository you want to clone.'
+            )
+            ->addOption(
+               'all',
+               null,
+               InputOption::VALUE_NONE,
+               'If set, all the repositories of the user will be cloned.'
+            )
+            ->setHelp(<<<EOT
+
+To generate a token please go to github.com -> Settings -> Applications -> Generate new token
+
+EOT
+);
+
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        //Lets bootstrap our configuration
+        $configuration = new Config;
+        if (!$configuration->getGithub()) {
+            $configuration->setGithub([]);
+        }
+
+        // Well maybe you don't know what to clone
+        $question = new Question('Enter your username:');
+        $username = $this->getHelper('question')->ask($input, $output, $question);
+        $configuration->getGithub()->setUsername($username);
+
+        $question = new Question('Enter your github token:');
+        $token = $this->getHelper('question')->ask($input, $output, $question);
+        $configuration->getGithub()->setToken($token);
+
+        $output->writeln('Welcome aboard: '. $username);
+    }
+}
