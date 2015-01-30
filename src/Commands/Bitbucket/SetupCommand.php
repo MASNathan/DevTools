@@ -31,15 +31,15 @@ EOT
         // Username
         $question = new Question('Enter your <info>Username</info>:');
         $username = $this->getHelper('question')->ask($input, $output, $question);
-        $configuration->getGithub()->setUsername($username);
+        $configuration->getBitbucket()->setUsername($username);
         // Key
         $question = new Question('Enter your <info>Consumer Key</info>:');
         $key = $this->getHelper('question')->ask($input, $output, $question);
-        $configuration->getGithub()->setToken($key);
+        $configuration->getBitbucket()->setKey($key);
         // Secret
         $question = new Question('Enter your <info>Consumer Secret</info>:');
         $secret = $this->getHelper('question')->ask($input, $output, $question);
-        $configuration->getGithub()->setToken($secret);
+        $configuration->getBitbucket()->setSecret($secret);
 
         $output->writeln('');
         $output->writeln(sprintf('Welcome aboard: <info>%s</info>', $username));
