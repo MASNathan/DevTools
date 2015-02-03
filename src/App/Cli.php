@@ -24,6 +24,7 @@ class Cli extends Application
             new Github\CreateCommand(),
             new Bitbucket\SetupCommand(),
             new Bitbucket\ListCommand(),
+            new Bitbucket\CloneCommand(),
         ));
     }
 }
